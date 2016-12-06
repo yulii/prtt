@@ -9,24 +9,20 @@ import Data.Commit
 import Data.List
 import Data.Maybe
 import Data.Ord
+import Data.TimeList
 import Data.Time.Clock
 import GHC.Word
 
+import System.Environment (getArgs)
+
 main :: IO ()
 main = do
-  commits <- getCommitList "commits.json"
-  -- TODO: Nothing が含まれていないか、データの検査をして例外処理する
-  mapM_ print $ sortBy (\x y -> compare (datetime x) (datetime y)) commits
-  putStrLn "======"
-  mapM_ print $ diffUTCTimeList $ datetimeList commits
-  putStrLn "======"
-  print $ foldr (+) 0 $ filter (< intervalLimit) $ diffUTCTimeList $ datetimeList commits
+  args <- getArgs
+  commits <- getCommitList $ head args
+  print $ totalCommitTime intervalLimit $ sort $ map datetime commits
 
 intervalLimit :: NominalDiffTime
 intervalLimit = 60 * 60 * 4 -- 4 hours
-
-datetimeList = (sortBy (\x y -> compare x y)) . (map datetime)
-diffUTCTimeList list = zipWith diffUTCTime (tail list) list
 
 getCommitList file = do
   mapMaybe (\x -> decode x :: Maybe Commit) <$> BLC.lines <$> BL.readFile file
