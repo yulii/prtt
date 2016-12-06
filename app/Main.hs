@@ -6,10 +6,9 @@ import Data.Aeson
 import qualified Data.ByteString.Lazy       as BL
 import qualified Data.ByteString.Lazy.Char8 as BLC
 import Data.Commit
+import Data.GitLog
 import Data.List
 import Data.Maybe
-import Data.Ord
-import Data.TimeList
 import Data.Time.Clock
 import GHC.Word
 
@@ -19,7 +18,7 @@ main :: IO ()
 main = do
   args <- getArgs
   commits <- getCommitList $ head args
-  print $ totalCommitTime intervalLimit $ sort $ map datetime commits
+  print $ totalAuthorCommitTime intervalLimit "Ryo Yoneyama (@yulii)" commits
 
 intervalLimit :: NominalDiffTime
 intervalLimit = 60 * 60 * 4 -- 4 hours
