@@ -20,10 +20,13 @@ main = do
   commits <- getCommitList $ head args
 --  limit   <- getCommitList $ args !! 0
 --  commits <- getCommitList $ args !! 1
-  mapM_ print $ aggregateCommitList intervalLimit commits
+  mapM_ print $ map (\x -> (fst x, diffHours(snd x)) ) $ aggregateCommitList intervalLimit commits
 
 intervalLimit :: NominalDiffTime
 intervalLimit = 60 * 60 * 4 -- 4 hours
+
+diffHours :: NominalDiffTime -> [Char]
+diffHours t = show ( realToFrac ( truncate ( t / 60 / 60 * 10 ) ) / 10 ) ++ "h"
 
 getCommitList file = do
   mapMaybe (\x -> decode x :: Maybe Commit) <$> BLC.lines <$> BL.readFile file
