@@ -23,7 +23,7 @@ main = do
   mapM_ print $ map (\x -> (fst x, diffHours(snd x)) ) $ aggregateCommitList intervalLimit commits
 
 intervalLimit :: NominalDiffTime
-intervalLimit = 60 * 60 * 4 -- 4 hours
+intervalLimit = 60 * 60 * 8 -- 8 hours
 
 diffHours :: NominalDiffTime -> [Char]
 diffHours t = show ( realToFrac ( truncate ( t / 60 / 60 * 10 ) ) / 10 ) ++ "h"
